@@ -31,3 +31,5 @@ messages:
   usage: "&eUse: /Bridge Egg\n/Bridge Ball"
   bridgeEggGiven: "&aYou have received the bridge egg!"
   bridgeBallGiven: "&aYou have received the bridge ball!"
+  configReloaded: "&aPlugin configurations reloaded!"
+  pluginReloaded: "&aPlugin reloaded!"
