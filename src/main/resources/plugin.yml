@@ -1,0 +1,8 @@
+name: MN-HuevoPuente
+version: 1.0.0
+author: ZxyretrohackyxZ
+main: hacky.dev.MNHP
+commands:
+  bridge:
+    description: Main command.
+    aliases: [projectile]
