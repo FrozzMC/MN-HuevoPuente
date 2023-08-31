@@ -2,75 +2,57 @@ package hacky.dev.handlers;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.entity.Egg;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.scheduler.BukkitRunnable;
 import hacky.dev.MNHP;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 public class PathwayHandler {
-    private final Material bridgeMaterial;
-    private final byte eggData;
-    private final byte snowballData;
-
-    public static HashMap<Projectile, Material> pathways = new HashMap();
-
-    public PathwayHandler() {
-        this.bridgeMaterial = Material.WOOL;
-        this.eggData = 14;
-        this.snowballData = 5;
-
-        new BukkitRunnable() {
-            public void run() {
-                if (!pathways.isEmpty()) {
-                    Iterator<Projectile> iterator = pathways.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        Projectile proj = iterator.next();
-                        if (proj.isDead() || !proj.isValid()) {
-                            iterator.remove();
-                            continue;
-                        }
-
-                        if (proj instanceof Egg) {
-                            handleProjectile(proj, eggData);
-                        } else {
-                            handleProjectile(proj, snowballData);
-                        }
-                    }
-                }
-            }
-        }.runTaskTimer(MNHP.getInstance(), 0L, 1L);
-    }
-
-    private void handleProjectile(Projectile proj, byte data) {
-        Player pl = (Player) proj.getShooter();
-        Location loc = proj.getLocation();
-
-        if (pl.getLocation().distance(loc) > 4.0) {
-            loc = loc.clone().subtract(0.0, 2.0, 0.0);
-
-            loc.getBlock().setType(bridgeMaterial);
-            loc.getBlock().setData(data);
-
-            pl.playSound(loc, Sound.STEP_STONE, 10.0F, 1.0F);
-
-            loc.clone().subtract(0.0, 0.0, 1.0).getBlock().setType(bridgeMaterial);
-            loc.clone().subtract(1.0, 0.0, 0.0).getBlock().setType(bridgeMaterial);
-            loc.clone().add(0.0, 0.0, 1.0).getBlock().setType(bridgeMaterial);
-            loc.clone().add(1.0, 0.0, 0.0).getBlock().setType(bridgeMaterial);
-
-            loc.clone().subtract(0.0, 0.0, 1.0).getBlock().setData(data);
-            loc.clone().subtract(1.0, 0.0, 0.0).getBlock().setData(data);
-            loc.clone().add(0.0, 0.0, 1.0).getBlock().setData(data);
-            loc.clone().add(1.0, 0.0, 0.0).getBlock().setData(data);
+	private final List<Projectile> projectiles;
+	private final Material bridgeMaterial;
+	
+	public PathwayHandler() {
+		projectiles = new ArrayList<>();
+		bridgeMaterial = Material.WOOL;
+	}
+	
+	public void startCheckTask() {
+		new BukkitRunnable() {
+			public void run() {
+				// Checks if the list don't have any element.
+				if (projectiles.isEmpty()) {
+					return;
+				}
+				for (final Projectile projectile : projectiles) {
+					// Checks if the projectile is death, or isn't valid.
+					if (projectile.isDead() || !projectile.isValid()) {
+						continue;
+					}
+					EntityType type = projectile.getType();
+					// Checks if the projectile type is 'EGG' or 'SNOWBALL'.
+          if ((type == EntityType.EGG) || (type == EntityType.SNOWBALL)) {
+            handleProjectile(projectile);
+          }
+          type = null;
         }
+			}
+		}.runTaskTimer(MNHP.getInstance(), 0L, 1L);
+	}
+	
+	public List<Projectile> projectiles() {
+		return projectiles;
+	}
+	
+	private void handleProjectile(final Projectile projectile) {
+		Location loc = projectile.getLocation();
+		// Checks if the player location distance to the projectile location is minor or equal to 4.0
+		if (((Player) projectile.getShooter()).getLocation().distance(loc) > 4.0) {
+      loc.subtract(0.0, 2.0, 0.0).getBlock().setType(bridgeMaterial);
+      loc.subtract(0.0, 0.0, 1.0).getBlock().setType(bridgeMaterial);
+      loc.subtract(1.0, 0.0, 0.0).getBlock().setType(bridgeMaterial);
     }
-
-    public Material getBridgeMaterial() {
-        return bridgeMaterial;
-    }
+	}
 }
