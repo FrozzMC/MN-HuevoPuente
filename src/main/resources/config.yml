@@ -29,7 +29,6 @@ items:
 messages:
   noPermission: "&cYou don't have permission to use this command."
   usage: "&eUse: /Bridge Egg\n/Bridge Ball"
-  bridgeEggGiven: "&aYou have received the bridge egg!"
-  bridgeBallGiven: "&aYou have received the bridge ball!"
+  bridgeGiven: "&aYou have received the bridge %type%!"
   configReloaded: "&aPlugin configurations reloaded!"
   pluginReloaded: "&aPlugin reloaded!"
