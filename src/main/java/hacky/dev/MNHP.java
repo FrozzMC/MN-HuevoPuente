@@ -14,13 +14,15 @@ public class MNHP extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
         config = getConfig();
+        config.options().copyDefaults(true);
         saveDefaultConfig();
 
         pathwayHandler = new PathwayHandler();
         getServer().getPluginManager().registerEvents(new ProjectileEvents(config), this);
 
-        getCommand("bridge").setExecutor(new BridgeCommand(this, pathwayHandler));
+        new BridgeCommand(this, pathwayHandler);
     }
 
     @Override
